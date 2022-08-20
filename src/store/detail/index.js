@@ -18,7 +18,9 @@ const mutations = {
 }
 
 const getters = {
-
+  categoryView(state) {
+    return state.detailInfo.categoryView
+  }
 }
 
 export default {

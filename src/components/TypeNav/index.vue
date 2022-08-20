@@ -108,7 +108,7 @@ export default {
     },
     leaveHide() {
       this.curIndex = -1
-      if (this.$route.name === "search") this.isShow = false
+      if (this.$route.name === "search" || this.$route.name === "detail") this.isShow = false
     }
   },
   mounted() {

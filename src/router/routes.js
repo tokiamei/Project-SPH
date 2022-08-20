@@ -46,6 +46,7 @@ export default [
       meta: { showFooter: false }
   },
   {
+      name:"detail",
       path: "/detail/:skuid",
       component: Detail,
       meta: { showFooter: true }
