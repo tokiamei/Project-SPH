@@ -1,9 +1,9 @@
 <template>
   <div class="spec-preview">
-    <img src="../images/s1.png" />
+    <img :src="skuImageList[0].imgUrl" />
     <div class="event"></div>
     <div class="big">
-      <img src="../images/s1.png" />
+      <img :src="skuImageList[0].imgUrl"/>
     </div>
     <div class="mask"></div>
   </div>
@@ -12,6 +12,12 @@
 <script>
   export default {
     name: "Zoom",
+    props: {
+      // 这里是为了解决报错，父给的数据可能是 undefined，并且 数组第 0 项还可能是 undefined
+      skuImageList: {
+        default: () => [ {} ]
+      }
+    }
   }
 </script>
 

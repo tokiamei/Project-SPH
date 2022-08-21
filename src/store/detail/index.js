@@ -18,8 +18,19 @@ const mutations = {
 }
 
 const getters = {
+  // 导航路径
   categoryView(state) {
-    return state.detailInfo.categoryView
+    // 这里为什么要加一个或空对象 ?
+    // 因为不加的话控制台会报错，因为这个返回结果可能是 undefined，undefined.[] 肯定就报错了
+    return state.detailInfo.categoryView || {}
+  },
+  // 简化产品信息数据
+  skuInfo(state) {
+    return state.detailInfo.skuInfo || {}
+  },
+  // 产品售卖属性的变化
+  spuSaleAttrList(state) {
+    return state.detailInfo.spuSaleAttrList || []
   }
 }
 
