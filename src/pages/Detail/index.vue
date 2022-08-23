@@ -66,7 +66,7 @@
 							</div>
 						</div>
 					</div>
-
+          <!-- 属性选择区域 -->
 					<div class="choose">
 						<div class="chooseArea">
 							<div class="choosed"></div>
@@ -77,6 +77,7 @@
                   :key="spuSaleAttrValue.id"
                   changepirce="0" 
                   :class="{ active: spuSaleAttrValue.isChecked == 1 }"
+                  @click="changeActive(spuSaleAttrValue, spuSaleAttr.spuSaleAttrValueList)"
                 >
                   {{spuSaleAttrValue.saleAttrValueName}}
                 </dd>
@@ -344,6 +345,15 @@ export default {
   },
   computed: {
     ...mapGetters([ 'categoryView', 'skuInfo', 'spuSaleAttrList' ]) 
+  },
+  methods: {
+    changeActive(spuSaleAttrValue, arr) {
+      // 遍历全部属性值，让所有的 isChecked = 0，没有高亮
+      arr.forEach((item) => {
+        item.isChecked = '0'
+      })
+      spuSaleAttrValue.isChecked = 1
+    }
   }
 };
 </script>

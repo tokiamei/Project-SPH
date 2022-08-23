@@ -1,6 +1,6 @@
 <template>
   <div class="spec-preview">
-    <img :src="skuImageList[0].imgUrl" />
+    <img :src="skuImageList[currentIndex].imgUrl" />
     <div class="event"></div>
     <div class="big">
       <img :src="skuImageList[0].imgUrl"/>
@@ -11,12 +11,22 @@
 
 <script>
   export default {
+    data() {
+      return {
+       currentIndex: 0 
+      }
+    },
     name: "Zoom",
     props: {
       // 这里是为了解决报错，父给的数据可能是 undefined，并且 数组第 0 项还可能是 undefined
       skuImageList: {
         default: () => [ {} ]
       }
+    },
+    mounted() {
+      this.$bus.$on('getIndex', (index) => {
+        this.currentIndex = index
+      })
     }
   }
 </script>
