@@ -46,3 +46,9 @@ export const reqDetail = (skuId) => requests({
   url: `/item/${skuId}`,
   method: "get"
 })
+
+// 产品添加到购物车【获取更新某个产品的数量】
+export const reqShopCart = (skuid, skuNum) => requests({
+  url: `/cart/addToCart/${skuid}/${skuNum}`,
+  method: 'post'
+})

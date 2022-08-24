@@ -1,18 +1,22 @@
-import { reqDetail } from '@/api'
+import { reqDetail, reqShopCart } from '@/api'
 const state = {
   detailInfo: {}
 }
 
 const actions = {
-  async reqDetail({ commit }, skuId) {
+  async reqDetailInfo({ commit }, skuId) {
     const result = await reqDetail(skuId)
     // console.log(result);
-    result.code === 200 && commit('REQDETAIL', result.data)
+    result.code === 200 && commit('REQDETAILINFO', result.data)
+  },
+  async reqShopCartInfo({ commit }, { skuid, skuNum }) {
+    const shopCartInfo = await reqShopCart(skuid, skuNum)
+    console.log(shopCartInfo );
   }
 }
 
 const mutations = {
-  REQDETAIL(state, detailInfo) {
+  REQDETAILINFO(state, detailInfo) {
     state.detailInfo = detailInfo
   }
 }

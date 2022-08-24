@@ -85,12 +85,12 @@
 						</div>
 						<div class="cartWrap">
 							<div class="controls">
-								<input autocomplete="off" class="itxt" />
-								<a href="javascript:" class="plus">+</a>
-								<a href="javascript:" class="mins">-</a>
+								<input autocomplete="off" class="itxt" v-model="skuNum" @change="changeSkuNum"/>
+								<a class="plus" @click="skuNum++">+</a>
+								<a class="mins" @click="skuNum > 0 && skuNum--">-</a>
 							</div>
 							<div class="add">
-								<a>加入购物车</a>
+								<a @click="reqShopCartInfo">加入购物车</a>
 							</div>
 						</div>
 					</div>
@@ -334,6 +334,11 @@ import Zoom from "./Zoom/Zoom";
 import { mapGetters }  from 'vuex'
 export default {
 	name: "Detail",
+  data() {
+    return {
+      skuNum: 1
+    }
+  },
 	components: {
 		ImageList,
 		Zoom,
@@ -341,18 +346,34 @@ export default {
   mounted() {
     // console.log(this.$route.params);
     // this.$store.dispatch('reqDetail', this.$route.params.skuId)
-    this.$store.dispatch('reqDetail', this.$route.params.skuid)
+    this.$store.dispatch('reqDetailInfo', this.$route.params.skuid)
   },
   computed: {
     ...mapGetters([ 'categoryView', 'skuInfo', 'spuSaleAttrList' ]) 
   },
   methods: {
+    // 售卖属性切换高亮
     changeActive(spuSaleAttrValue, arr) {
       // 遍历全部属性值，让所有的 isChecked = 0，没有高亮
       arr.forEach((item) => {
         item.isChecked = '0'
       })
       spuSaleAttrValue.isChecked = 1
+    },
+    // 表单元素修改产品个数
+    changeSkuNum() {
+      // 利用正则去解决
+      // console.log(this.skuNum);
+      const reg = /^[1-9]{1,3}$/
+      if (!reg.test(this.skuNum)) {
+        this.skuNum = 1
+      }
+    },
+    reqShopCartInfo() {
+      // 1.发请求--产品信息加入到数据库【通知服务器】
+      // 2.服务器存储成功--进行路由跳转【传递参数】
+      // 3.失败，给用户信息提示
+      this.$store.dispatch('reqShopCartInfo', { skuid: this.$route.params.skuid, skuNum: this.skuNum})
     }
   }
 };
