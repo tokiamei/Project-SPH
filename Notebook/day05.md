@@ -17,7 +17,7 @@ $nextTick：可以保证页面中的结构一定是有的，经常和很多插�
 
 切记：仓库中的 state 的数据格式，别瞎写、胡写、乱写，数据格式取决于服务器返回的数据
 
-## 2.1、getFloorLIst 好·这个 action 发布位置
+## 2.1、getFloorLIst 好这个 action 发布位置
 
 需要在 Home 路由组件当中发，不能在 Floor 组件内部发 action，因为我们需要 v-for 遍历 floor 组件
 
