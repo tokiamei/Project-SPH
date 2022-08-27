@@ -37,7 +37,7 @@
             <span class="sum">{{ cart.skuNum * cart.skuPrice }}</span>
           </li>
           <li class="cart-list-con7">
-            <a class="sindelet">删除</a>
+            <a class="sindelet" @click="deleteShop(cart.skuId)">删除</a>
             <br>
             <a>移到收藏</a>
           </li>
@@ -50,9 +50,9 @@
         <span>全选</span>
       </div>
       <div class="option">
-        <a href="#none">删除选中的商品</a>
-        <a href="#none">移到我的关注</a>
-        <a href="#none">清除下柜商品</a>
+        <a>删除选中的商品</a>
+        <a>移到我的关注</a>
+        <a>清除下柜商品</a>
       </div>
       <div class="money-box">
         <div class="chosed">已选择
@@ -62,7 +62,7 @@
           <i class="summoney">{{totalCost}}</i>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn" href="###" target="_blank">结算</a>
+          <a class="sum-btn">结算</a>
         </div>
       </div>
     </div>
@@ -70,6 +70,7 @@
 </template>
 
 <script>
+import throttle from 'lodash/throttle'
 import { mapGetters } from 'vuex'
   export default {
     name: 'ShopCart',
@@ -100,14 +101,16 @@ import { mapGetters } from 'vuex'
       getData() {
         this.$store.dispatch('reqShopCartListInfo')
       },
-      async changeNum(id, type, num) {
+      changeNum: throttle(async function(id, type, num) {
         try {
-          // 如果商品数量小于等于 0 或者 改变量为 0，直接返回
-          if (num <= 0 || type == 0 || num <= Math.abs(type)) return 
+          // 利用正则限制非法输入
           const reg = /^[-1-9][0-9]{0,3}$/
-          // 不符合规范的输入直接令其为 0
-          if (!reg.test(type)) {
-            type = 0
+          // 如果商品数量小于等于 0 或者 改变量为 0 或者是非法输入，直接返回
+          if (!reg.test(type) || type == 0 || num  < -type) return 
+          // 如果商品存在的数量和减小的值相等，就把这个商品删掉【并把页面渲染完毕】
+          if (num == -type) {
+            await this.deleteShop(id)
+            this.getData()
           } else {
             await this.$store.dispatch('reqShopCartInfo', {
               skuid: id,
@@ -115,8 +118,17 @@ import { mapGetters } from 'vuex'
             })
             this.getData()
           }
+          
         } catch (error) {
           console.log('修改商品数量失败', error);
+        }
+      }, 1000), // 节流【一秒钟只让点一次】
+      async deleteShop(skuid) {
+        try {
+          await this.$store.dispatch('deleteShop', skuid)
+          this.getData()
+        } catch (error) {
+          console.log(error);
         }
       }
     }

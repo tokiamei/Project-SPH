@@ -364,7 +364,7 @@ export default {
     changeSkuNum() {
       // 利用正则去解决
       // console.log(this.skuNum);
-      const reg = /^[1-9][0-9]{1,2}$/
+      const reg = /^[1-9][0-9]{0,3}$/
       if (!reg.test(this.skuNum)) {
         this.skuNum = 1
       }

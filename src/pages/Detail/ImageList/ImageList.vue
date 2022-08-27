@@ -1,7 +1,7 @@
 <template>
   <div class="swiper-container">
     <div class="swiper-wrapper">
-      <div class="swiper-slide" v-for="(img, index) in skuImageList" :key="img.skuId">
+      <div class="swiper-slide" v-for="(img, index) in skuImageList" :key="img.id">
         <img :src="img.imgUrl" :class="{ active: currentIndex == index }" @click="changeIndex(index)">
       </div>
     </div>
