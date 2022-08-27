@@ -8,17 +8,22 @@ import Detail from "@/pages/Detail"
 
 export default [
   {
-      name: "home",
-      path: "/home",
-      component: Home,
-      meta: { showFooter: true }
+    name: "home",
+    path: "/home",
+    component: Home,
+    meta: { showFooter: true }
+  },
+  // 重定向，在项目跑起来的时候，访问 / ，立马让他定位到首页
+  {
+    path: "*",
+    redirect: "/home"
   },
   {
-      name: "search",
-      path: "/search/:keyword?",
-      component: Search,
-      meta: { showFooter: true },
-      //#region 
+    name: "search",
+    path: "/search/:keyword?",
+    component: Search,
+    meta: { showFooter: true },
+    //#region 
       /* 利用 props 传递参数 */
       // 布尔值写法
       // props: true
@@ -36,24 +41,34 @@ export default [
       //#endregion
   },
   {
-      path: "/login",
-      component: Login,
-      meta: { showFooter: false }
+    path: "/login",
+    component: Login,
+    meta: { showFooter: false }
   },
   {
-      path: "/register",
-      component: Register,
-      meta: { showFooter: false }
+    path: "/register",
+    component: Register,
+    meta: { showFooter: false }
   },
   {
-      name:"detail",
-      path: "/detail/:skuid",
-      component: Detail,
-      meta: { showFooter: true }
+    name: "detail",
+    path: "/detail/:skuid",
+    component: Detail,
+    meta: { showFooter: true }
   },
-  // 重定向，在项目跑起来的时候，访问 / ，立马让他定位到首页
+  // 购物成功路由组件
   {
-      path: "*",
-      redirect: "/home"
+    name: "addCartSucess",
+    path: '/addCartSucess',
+    component: () => import('@/pages/AddCartSuccess'),
+    meta: { showFooter: true }
+  },
+  // 购物车路由组件
+  {
+    name: 'shopCart',
+    path: '/shopCart',
+    component: () => import('@/pages/ShopCart'),
+    meta: { showFooter: true }
   }
+
 ]

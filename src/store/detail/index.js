@@ -1,6 +1,9 @@
 import { reqDetail, reqShopCart } from '@/api'
+// 封装游客身份模块 uuid ---> 生成一个随机的字符串【不能在变】
+import { getUUID } from '@/utils/uuidToken'
 const state = {
-  detailInfo: {}
+  detailInfo: {},
+  uuidToken: getUUID()
 }
 
 const actions = {
@@ -10,8 +13,14 @@ const actions = {
     result.code === 200 && commit('REQDETAILINFO', result.data)
   },
   async reqShopCartInfo({ commit }, { skuid, skuNum }) {
-    const shopCartInfo = await reqShopCart(skuid, skuNum)
-    console.log(shopCartInfo );
+    const result = await reqShopCart(skuid, skuNum)
+    // 加入购物车成功
+    if (result.code == 200) {
+      return 'OK'
+    } else {
+      // 加入购物车失败
+      return Promise.reject(new Error('Fail'))
+    }
   }
 }
 

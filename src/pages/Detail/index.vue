@@ -364,16 +364,32 @@ export default {
     changeSkuNum() {
       // 利用正则去解决
       // console.log(this.skuNum);
-      const reg = /^[1-9]{1,3}$/
+      const reg = /^[1-9][0-9]{1,2}$/
       if (!reg.test(this.skuNum)) {
         this.skuNum = 1
       }
     },
-    reqShopCartInfo() {
+    // 加入购物车|修改某个产品的数量
+    async reqShopCartInfo() {
       // 1.发请求--产品信息加入到数据库【通知服务器】
       // 2.服务器存储成功--进行路由跳转【传递参数】
       // 3.失败，给用户信息提示
-      this.$store.dispatch('reqShopCartInfo', { skuid: this.$route.params.skuid, skuNum: this.skuNum})
+      try {
+        const result = await this.$store.dispatch('reqShopCartInfo', {
+          skuid: this.$route.params.skuid, 
+          skuNum: this.skuNum
+        })
+        // 进行路由跳转
+        // 一些简单的数据，用 query 参数的形式传递过去
+        // 产品信息的数据【比较复杂】，通过会话存储【不持久化，会话结束再消失】
+        sessionStorage.setItem('skuInfo', JSON.stringify(this.skuInfo))
+        this.$router.push({ 
+          name: 'addCartSucess',
+          query: { skuNum: this.skuNum }
+        })
+      } catch (error) {
+        console.log('⚔️⚔️⚔️购物车信息请求失败', error);
+      }
     }
   }
 };

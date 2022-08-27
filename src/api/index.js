@@ -52,3 +52,9 @@ export const reqShopCart = (skuid, skuNum) => requests({
   url: `/cart/addToCart/${skuid}/${skuNum}`,
   method: 'post'
 })
+
+// 获取购物车列表信息
+export const reqShopCartList = () => requests({
+  url: '/cart/cartList',
+  method: 'get'
+})
