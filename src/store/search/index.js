@@ -12,7 +12,7 @@ const actions = {
     async getSearchInfo({commit}, params = {}) {
         let result = await reqGetSearchInfo(params)
         // console.log(result.data)
-        if (result.code === 200) {
+        if (result.code == 200) {
             commit("GETSEARCHINFO", result.data)
         }
     }

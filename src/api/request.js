@@ -2,11 +2,10 @@
 import axios from "axios"
 // 引入进度条
 import nprogress from "nprogress"
-// start：进度条开始
-// done：进度条结束
-
 // 引入进度条样式
 import "nprogress/nprogress.css"
+
+import user from '@/store/user'
 
 
 // 1.利用 axios 对象的 create 方法，去创建一个 axios 实例
@@ -26,7 +25,10 @@ requests.interceptors.request.use( (config) => {
     if (localStorage.getItem('UUIDTOKEN')) {
       config.headers.userTempId = localStorage.getItem('UUIDTOKEN')
     }
-    // 进度条开始
+    if (user.state.token) {
+      config.headers.token = user.state.token
+    }
+    // start：进度条开始 || done：进度条结束
     nprogress.start()
     return config
 })

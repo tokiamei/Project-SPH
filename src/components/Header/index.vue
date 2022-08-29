@@ -6,21 +6,25 @@
         <div class="container">
           <div class="loginList">
             <p>尚品汇欢迎您！</p>
-            <p>
+            <p v-if="!userName">
               <span>请</span>
               <router-link to="/login">登录</router-link>
               <router-link class="register" to="/register">免费注册</router-link>
             </p>
+            <p v-else>
+              <a>{{userName}}</a>
+              <a class="register">退出登录</a>
+            </p>
           </div>
           <div class="typeList">
-            <a href="###">我的订单</a>
-            <a href="###">我的购物车</a>
-            <a href="###">我的尚品汇</a>
-            <a href="###">尚品汇会员</a>
-            <a href="###">企业采购</a>
-            <a href="###">关注尚品汇</a>
-            <a href="###">合作招商</a>
-            <a href="###">商家后台</a>
+            <a>我的订单</a>
+            <a>我的购物车</a>
+            <a>我的尚品汇</a>
+            <a>尚品汇会员</a>
+            <a>企业采购</a>
+            <a>关注尚品汇</a>
+            <a>合作招商</a>
+            <a>商家后台</a>
           </div>
         </div>
       </div>
@@ -32,7 +36,7 @@
           </router-link>
         </h1>
         <div class="searchArea">
-          <form action="###" class="searchForm">
+          <form class="searchForm">
             <input
               type="text"
               id="autocomplete"
@@ -50,6 +54,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
   data () {
     return {
@@ -117,6 +122,9 @@ export default {
   mounted() {
     /* 通过全局事件总线清楚关键字 */
     this.$bus.$on('clearKeyword', () => this.keyword = '')
+  },
+  computed: {
+    ...mapGetters([ 'userName' ])
   }
 };
 </script>
