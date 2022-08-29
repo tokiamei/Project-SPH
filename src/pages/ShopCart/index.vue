@@ -13,7 +13,11 @@
       <div class="cart-body">
         <ul class="cart-list" v-for="cart in cartInfoList" :key="cart.skuId">
           <li class="cart-list-con1">
-            <input type="checkbox" name="chk_list" :checked="cart.isChecked == 1">
+            <input type="checkbox" 
+              name="chk_list" 
+              :checked="cart.isChecked == 1"
+              @change="updateIsChecked(cart.skuId, cart.isChecked)"
+            >
           </li>
           <li class="cart-list-con2">
             <img :src="cart.imgUrl">
@@ -46,11 +50,16 @@
     </div>
     <div class="cart-tool">
       <div class="select-all">
-        <input class="chooseAll" type="checkbox" :checked="isAllChecked">
+        <input 
+        class="chooseAll" 
+        type="checkbox" 
+        :checked="isAllChecked"
+        @change="updateAllChecked"
+      >
         <span>全选</span>
       </div>
       <div class="option">
-        <a>删除选中的商品</a>
+        <a @click="deleteAllChecked">删除选中的商品</a>
         <a>移到我的关注</a>
         <a>清除下柜商品</a>
       </div>
@@ -94,6 +103,7 @@ import { mapGetters } from 'vuex'
       },
       // 判断底部复选框是否勾选【全部产品都选中，才会勾选】
       isAllChecked() {
+        if (this.cartInfoList.length == 0) return false
         return this.cartInfoList.every(item => item.isChecked == 1)
       }
     },
@@ -101,6 +111,7 @@ import { mapGetters } from 'vuex'
       getData() {
         this.$store.dispatch('reqShopCartListInfo')
       },
+      // 修改商品状态
       changeNum: throttle(async function(id, type, num) {
         try {
           // 利用正则限制非法输入
@@ -118,11 +129,12 @@ import { mapGetters } from 'vuex'
             })
             this.getData()
           }
-          
+         
         } catch (error) {
           console.log('修改商品数量失败', error);
         }
       }, 1000), // 节流【一秒钟只让点一次】
+      // 删除商品
       async deleteShop(skuid) {
         try {
           await this.$store.dispatch('deleteShop', skuid)
@@ -130,6 +142,56 @@ import { mapGetters } from 'vuex'
         } catch (error) {
           console.log(error);
         }
+      },
+      // 修改选中商品的状态 isChecked 属性
+      async updateIsChecked(skuId, isChecked) {
+        try {
+          switch (isChecked) {
+            case 0:
+              isChecked = '1'
+              break;
+            case 1:
+              isChecked = '0'
+              break;
+          }
+          await this.$store.dispatch('updateIsChecked', { skuId, isChecked })
+          this.getData()
+        } catch (error) {
+          console.log('修改状态失败', error);
+        }
+      },
+      // 删除所有选中的产品【用 Promise.all() 来确定返回是否成功】
+      deleteAllChecked() {
+        const PromiseAll = []
+        this.cartInfoList.forEach((item) => {
+          if (item.isChecked == 1) {
+            PromiseAll.push(this.deleteShop(item.skuId))
+          }
+        })
+        Promise.all(PromiseAll).then(
+          result => console.log('删除全部选中商品成功'),
+          error => console.log('删除全部选中商品失败', error)
+        )
+
+      },
+      // 点击全选，全部选中，再点击一次，全部不选中
+      updateAllChecked() {
+        const PromiseAll = []
+        if (this.isAllChecked) {
+          this.cartInfoList.forEach(item => {
+            PromiseAll.push(this.updateIsChecked(item.skuId, item.isChecked))
+          })
+        } else {
+          this.cartInfoList.forEach(item => {
+            // && 不能把 '0' 转化为 0
+            (item.isChecked == 0) && PromiseAll.push(this.updateIsChecked(item.skuId, item.isChecked))
+          })
+        }
+        Promise.all(PromiseAll).then(
+          result => console.log('修改全选成功'),
+          error => console.log('修改全选失败', error)
+        )
+        this.getData()
       }
     }
   }

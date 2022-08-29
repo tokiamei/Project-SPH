@@ -39,7 +39,7 @@ requests.interceptors.response.use(
         return res.data
     },
     (error) => {
-        return Promise.reject('😶‍🌫️😶‍🌫️😶😶', error)
+        return Promise.reject(error)
     }
 )
 

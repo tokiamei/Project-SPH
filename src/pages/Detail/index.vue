@@ -360,7 +360,7 @@ export default {
       })
       spuSaleAttrValue.isChecked = 1
     },
-    // 表单元素修改产品个数
+    // 表单元素修改产品个数【利用正则限制用户输入】
     changeSkuNum() {
       // 利用正则去解决
       // console.log(this.skuNum);

@@ -64,3 +64,9 @@ export const reqDeleteShop = (skuid) => requests({
   url: `/cart/deleteCart/${skuid}`,
   method: 'delete'
 })
+
+// 修改购物车中某种商品的选中状态
+export const reqUpdateIsChecked = (skuId, isChecked) => requests({
+  url: `/cart/checkCart/${skuId}/${isChecked}`,
+  method: 'get'
+})
