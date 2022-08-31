@@ -91,3 +91,22 @@ export const reqUserInfo = () => requests({
   url: '/user/passport/auth/getUserInfo',
   method: 'get'
 })
+
+// 用户退出登陆 /user/passport/logout
+export const reqLogOut = () => requests({
+  url: '/user/passport/logout',
+  method: 'get'
+})
+
+/* =================================== 订单交易模块 ======================= */
+// 获取用户地址信息
+export const reqAddressInfo = () => requests({
+  url: '/user/userAddress/auth/findUserAddressList',
+  method: 'get'
+}) 
+
+// 获取订单信息
+export const reqOrderInfo = () => requests({
+  url: '/order/auth/trade',
+  method: 'get'
+})

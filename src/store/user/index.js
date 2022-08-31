@@ -1,10 +1,11 @@
 /* 
   用户注册与登陆的模块
 */
-import { reqGetCode, reqUserRegister, reqLogin, reqUserInfo } from '@/api'
+import { reqGetCode, reqUserRegister, reqLogin, reqUserInfo, reqLogOut } from '@/api'
+import { setToken, getToken, removeToken } from '@/utils/token'
 
 const state = {
-  token: '',
+  token: getToken(),
   userInfo: {}
 }
 
@@ -21,7 +22,6 @@ const actions = {
   // 用户注册
   async userRegister({ commit }, params) {
       const result = await reqUserRegister(params)
-      // console.log(result);
       // 返回是否注册成功
       if (result.code == 200) {
         return 'ok'
@@ -32,9 +32,9 @@ const actions = {
   // 用户登陆
   async userLogin({ commit }, params) {
     const result = await reqLogin(params)
-    // console.log(result);
     if (result.code == 200) {
       commit('USERLOGIN', result.data.token)
+      setToken(result.data.token)
       return 'ok'
     }
     else return Promise.reject('登陆失败')
@@ -49,6 +49,16 @@ const actions = {
     } else {
       return Promise.reject(new Error('请求用户信息失败'))
     }
+  },
+  // 用户退出登陆
+  async logOut({ commit }) {
+    const result = await reqLogOut()
+    if (result.code == 200) {
+      commit('LOGOUT')
+      return 'ok'
+    } else {
+      return Promise.reject(new Error('用户退出登陆失败'))
+    }
   }
 }
 
@@ -58,6 +68,11 @@ const mutations = {
   },
   USERINFO(state, userInfo) {
     state.userInfo = userInfo
+  },
+  LOGOUT(state) {
+    state.token = ''
+    state.userInfo = {}
+    removeToken()
   }
 }
 

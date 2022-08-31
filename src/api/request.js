@@ -25,6 +25,7 @@ requests.interceptors.request.use( (config) => {
     if (localStorage.getItem('UUIDTOKEN')) {
       config.headers.userTempId = localStorage.getItem('UUIDTOKEN')
     }
+    // 请求用户信需要请求头携带 token
     if (user.state.token) {
       config.headers.token = user.state.token
     }

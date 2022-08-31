@@ -18,6 +18,7 @@ export default [
     path: "*",
     redirect: "/home"
   },
+  // 搜索组件
   {
     name: "search",
     path: "/search/:keyword?",
@@ -40,16 +41,21 @@ export default [
       // }
       //#endregion
   },
+  // 登陆组件
   {
+    name: 'login',
     path: "/login",
     component: Login,
     meta: { showFooter: false }
   },
+  // 注册组件
   {
+    name: 'register',
     path: "/register",
     component: Register,
     meta: { showFooter: false }
   },
+  // 详情组件
   {
     name: "detail",
     path: "/detail/:skuid",
@@ -68,6 +74,13 @@ export default [
     name: 'shopCart',
     path: '/shopCart',
     component: () => import('@/pages/ShopCart'),
+    meta: { showFooter: true }
+  },
+  // 交易组件
+  {
+    name: 'trade',
+    path: '/trade',
+    component: () => import('@/pages/Trade'),
     meta: { showFooter: true }
   }
 

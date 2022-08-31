@@ -6,10 +6,10 @@
         <div class="loginform">
           <ul class="tab clearFix">
             <li>
-              <a href="##" style="border-right: 0;">扫描登录</a>
+              <a style="border-right: 0;">扫描登录</a>
             </li>
             <li>
-              <a href="##" class="current">账户登录</a>
+              <a class="current">账户登录</a>
             </li>
           </ul>
 
@@ -30,7 +30,7 @@
                 </label>
                 <span class="forget">忘记密码？</span>
               </div>
-              <button class="btn" @click="userLogin">登&nbsp;&nbsp;录</button>
+              <button class="btn" @click.prevent="userLogin">登&nbsp;&nbsp;录</button>
             </form>
 
             <div class="call clearFix">
@@ -79,8 +79,10 @@
       async userLogin() {
         const { phone, pwd } = this;
         try {
-          (phone && pwd) && await this.$store.dispatch('userLogin', { phone, password: pwd })
-          this.$router.push('/')
+          if(phone && pwd) {
+            await this.$store.dispatch('userLogin', { phone, password: pwd })
+            this.$router.push("/home")
+          }
         } catch (error) {
           console.log(error);
         }

@@ -13,7 +13,7 @@
             </p>
             <p v-else>
               <a>{{userName}}</a>
-              <a class="register">退出登录</a>
+              <a class="register" @click="logOut">退出登录</a>
             </p>
           </div>
           <div class="typeList">
@@ -118,6 +118,14 @@ export default {
           query: this.$route.query||undefined
       })
     },
+    // 用户退出登录
+    async logOut() {
+      try {
+        await this.$store.dispatch('logOut')
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
   mounted() {
     /* 通过全局事件总线清楚关键字 */
