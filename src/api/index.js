@@ -105,8 +105,28 @@ export const reqAddressInfo = () => requests({
   method: 'get'
 }) 
 
-// 获取订单信息
+// 获取用户订单信息
 export const reqOrderInfo = () => requests({
   url: '/order/auth/trade',
+  method: 'get'
+})
+
+// 提交订单，传入订单编码，服务器会返回一个订单号
+export const reqSubmitOrder = (tradeNo, data) => requests({
+  url: `/order/auth/submitOrder?tradeNo=${tradeNo}`,
+  data: data,
+  method: 'post'
+})
+
+// 获取支付信息
+export const reqPayInfo = (orderId) => requests({
+  url: `/payment/weixin/createNative/${orderId}`,
+  method: 'get'  
+})
+
+// 获取订单付款状态【是成功了还是失败了】
+// /payment/weixin/queryPayStatus/{orderId}
+export const reqPayStatus = (orderId) => requests({
+  url: `/payment/weixin/queryPayStatus/${orderId}`,
   method: 'get'
 })

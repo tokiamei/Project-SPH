@@ -29,40 +29,29 @@
       </div>
       <div class="detail">
         <h5>商品清单</h5>
-        <ul class="list clearFix">
+        <ul class="list clearFix" v-for="order in orderInfo.detailArrayList" :key="order.skuId">
           <li>
-            <img src="./images/goods.png" alt="">
+            <img :src="order.imgUrl" style="width: 100px; height: 100px;">
           </li>
           <li>
-            <p>
-              Apple iPhone 6s (A1700) 64G 玫瑰金色 移动联通电信4G手机硅胶透明防摔软壳 本色系列</p>
+            <p>{{order.skuName}}</p>
             <h4>7天无理由退货</h4>
           </li>
           <li>
-            <h3>￥5399.00</h3>
+            <h3>{{order.orderPrice}}</h3>
           </li>
-          <li>X1</li>
-          <li>有货</li>
-        </ul>
-        <ul class="list clearFix">
-          <li>
-            <img src="./images/goods.png" alt="">
-          </li>
-          <li>
-            <p>
-              Apple iPhone 6s (A1700) 64G 玫瑰金色 移动联通电信4G手机硅胶透明防摔软壳 本色系列</p>
-            <h4>7天无理由退货</h4>
-          </li>
-          <li>
-            <h3>￥5399.00</h3>
-          </li>
-          <li>X1</li>
+          <li>{{order.skuNum}}</li>
           <li>有货</li>
         </ul>
       </div>
       <div class="bbs">
         <h5>买家留言：</h5>
-        <textarea placeholder="建议留言前先与商家沟通确认" class="remarks-cont"></textarea>
+        <textarea 
+          placeholder="建议留言前先与商家沟通确认" 
+          class="remarks-cont" 
+          v-model="cunsumerMessage"
+        >
+        </textarea>
 
       </div>
       <div class="line"></div>
@@ -75,8 +64,8 @@
     <div class="money clearFix">
       <ul>
         <li>
-          <b><i>1</i>件商品，总商品金额</b>
-          <span>¥5399.00</span>
+          <b><i>{{ orderInfo.totalNum }}</i>件商品，总商品金额</b>
+          <span>{{ orderInfo.totalAmount }}</span>
         </li>
         <li>
           <b>返现：</b>
@@ -90,7 +79,7 @@
     </div>
     <div class="trade">
       <div class="price">应付金额:　<span>¥5399.00</span></div>
-      <div class="receiveInfo">
+      <div class="receiveInfo" v-if="userAddressDefault">
         寄送至:
         <span>{{userAddressDefault.fullAddress}}</span>
         收货人：<span>{{userAddressDefault.consignee}}</span>
@@ -98,40 +87,81 @@
       </div>
     </div>
     <div class="sub clearFix">
-      <router-link class="subBtn" to="/pay">提交订单</router-link>
+      <a class="subBtn" to="/pay" @click="submitOrder">提交订单</a>
     </div>
   </div>
 </template>
 
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapGetters } from 'vuex';
   export default {
     name: 'Trade',
     data() {
       return {
+        // 用户留言信息
+        cunsumerMessage: '',
+        // 订单号
+        orderId: '',
         userAddressDefault: {}
       }
     },
-    async mounted() {
-      try {
-        await this.$store.dispatch('addressInfo'),
-        await this.$store.dispatch('getOrderInfo')
-      } catch (error) {
-        
-      }
+    mounted() {
+      // 获取用户地址和订单信息
+      this.getAddressInfo()
+      this.getOrderInfo(),
+      this.userAddressDefault = this.addressInfo.find(item => item.isDefault == 1)
     },
     computed: {
+      ...mapGetters(['addressInfo']),
       ...mapState({
-        addressInfo: state => state.trade.addressInfo
+        orderInfo: state => state.trade.orderInfo || {},
       })
     },
     methods: {
+      // 获取用户地址和订单信息信息
+      async getAddressInfo() {
+        try {
+          // 获取订单地址信息
+          await this.$store.dispatch('addressInfo')
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      // 获取用户订单信息
+      async getOrderInfo() {
+        try {
+          // 获取用户订单信息
+          await this.$store.dispatch('getOrderInfo')
+        } catch (error) {
+          console.log(error);
+        }
+      },
       // 修改默认地址
       changeDefult(address, addressInfo) {
         addressInfo.forEach(item => item.isDefault = 0)
         address.isDefault = 1
         // 把默认地址保存到 addressDefault
         this.userAddressDefault = address
+      },
+      async submitOrder() { 
+        // 交易bina编号
+        const { tradeNo } = this.orderInfo
+        let data = {
+          consignee: this.userAddressDefault.consignee,
+          consigneeTel: this.userAddressDefault.phoneNum,
+          deliveryAddress: this.userAddressDefault.fullAddress,
+          paymentWay: "ONLINE",
+          orderComment: this.cunsumerMessage,
+          orderDetailList: this.orderInfo.detailArrayList
+        }
+        // console.log(data);
+        const result = await this.$API.reqSubmitOrder(tradeNo, data)
+        if (result.code == 200) {
+          this.orderId = result.data
+          this.$router.push('/pay?orderId=' + this.orderId)
+        } else {
+          console.log('订单提交失败');
+        }
       }
     }
   }

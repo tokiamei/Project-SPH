@@ -82,6 +82,20 @@ export default [
     path: '/trade',
     component: () => import('@/pages/Trade'),
     meta: { showFooter: true }
-  }
+  },
+  // 支付组件
+  {
+    name: 'pay',
+    path: '/pay',
+    component: () => import('@/pages/Pay'),
+    meta: { showFooter: true }
+  },
+  // 支付成功路由
+  {
+    name: 'paySucess',
+    path: '/paySucess',
+    component: () => import('@/pages/PaySuccess'),
+    meta: { showFooter: true }
+  },
 
 ]

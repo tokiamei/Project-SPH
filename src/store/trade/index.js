@@ -1,7 +1,7 @@
 import { reqAddressInfo, reqOrderInfo } from '@/api'
 
 const state = {
-  addressInfo: {},
+  addressInfo: [{}],
   orderInfo: {}
 }
 
@@ -9,6 +9,7 @@ const actions = {
   // 获得用户地址信息
   async addressInfo({ commit }) {
     const result = await reqAddressInfo()
+    console.log('地址', result);
     if (result.code == 200) {
       commit('ADDRESSINFO', result.data)
       return 'ok'
@@ -19,6 +20,7 @@ const actions = {
   // 获取用户订单信息
   async getOrderInfo({ commit }) {
     const result = await reqOrderInfo()
+    console.log('订单', result);
     if (result.code == 200) {
       commit('GETORDERINFO', result.data)
       return 'ok'
@@ -37,7 +39,11 @@ const mutations = {
   }
 }
 
-const getters = {}
+const getters = {
+  addressInfo(state) {
+    return state.addressInfo || [{}]
+  }
+}
 
 export default {
   state,
