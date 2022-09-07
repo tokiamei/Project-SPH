@@ -17,8 +17,8 @@
             </p>
           </div>
           <div class="typeList">
-            <a>我的订单</a>
-            <a>我的购物车</a>
+            <router-link to="/center/myOrder">我的订单</router-link>
+            <router-link to="/shopCart">我的购物车</router-link>
             <a>我的尚品汇</a>
             <a>尚品汇会员</a>
             <a>企业采购</a>
@@ -117,6 +117,7 @@ export default {
           },
           query: this.$route.query||undefined
       })
+      // 点击我的订单订单跳转到个人中心/我的订单组件
     },
     // 用户退出登录
     async logOut() {

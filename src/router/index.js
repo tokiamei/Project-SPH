@@ -54,9 +54,10 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   const token = store.state.user.token
   const name = store.state.user.userInfo.name
+  const path = to.path
   if (token) {
     // 说明用户已经登陆了，如果他还想去 login【不让去】
-    if (to.path == '/login') {
+    if (path == '/login') {
       next('/home')
     } else {
       // 判断是否有用户信息
@@ -74,7 +75,14 @@ router.beforeEach(async (to, from, next) => {
       }
     }
   } else {
-    next()
+    // 禁止访问的路由: 交易相关、支付相关、用户中心
+    if (path.search('/trade|pay|center/') !== -1) {
+      console.log('你还没登陆');
+      // 把未登录的时候想去而没有去成的信息，存储再地址栏中【路由】
+      next(`/login?redirect=${path}`)
+    } else {
+      next()
+    }
   }
 })
 

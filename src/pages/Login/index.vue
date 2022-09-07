@@ -81,7 +81,13 @@
         try {
           if(phone && pwd) {
             await this.$store.dispatch('userLogin', { phone, password: pwd })
-            this.$router.push("/home")
+            // 先判断一下是否函数有 query 参数
+            if (this.$route.query) {
+              console.log(this.$route.query);
+              this.$router.push(this.$route.query.redirect)
+            } else {
+              this.$router.push('/home')
+            }
           }
         } catch (error) {
           console.log(error);

@@ -1,6 +1,5 @@
 <template>
   <div class="pay-main">
-    <el-button type="primary" size="default" icon="el-icon-edit">我是UI按钮</el-button>
     <div class="pay-container">
       <div class="checkout-tit">
         <h4 class="tit-txt">

@@ -97,5 +97,30 @@ export default [
     component: () => import('@/pages/PaySuccess'),
     meta: { showFooter: true }
   },
+  // 个人中心路由
+  {
+    name: 'center',
+    path: '/center',
+    component: () => import('@/pages/Center'),
+    meta: { showFooter: true },
+    // 二级路由
+    children: [
+      {
+        name: 'myOrder',
+        path: 'myOrder',
+        component: () => import('@/pages/Center/MyOrder')
+      },
+      {
+        name: 'groupOrder',
+        path: 'groupOrder',
+        component: () => import('@/pages/Center/GroupOrder')
+      },
+      // 重定向
+      {
+        path: '/center',
+        redirect: '/center/myOrder',
+      }
+    ]
+  }
 
 ]
