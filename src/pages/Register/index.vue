@@ -8,34 +8,64 @@
       </h3>
       <div class="content">
         <label>手机号:</label>
-        <input type="text" placeholder="请输入你的手机号" v-model="phone">
-        <span class="error-msg">错误提示信息</span>
+        <input
+          placeholder="请输入你的手机号"
+          v-model="phone"
+          name="phone"
+          v-validate="{ required: true, regex: /^1\d{10}$/ }"
+          :class="{ invalid: errors.has('phone') }"
+        />
+        <span class="error-msg">{{ errors.first("phone") }}</span>
       </div>
       <div class="content">
         <label>验证码:</label>
-        <input type="text" placeholder="请输入验证码" v-model="code">
+        <input
+          placeholder="请输入验证码"
+          v-model="code"
+          name="code"
+          v-validate="{ required: true, regex: /^\d{6}$/ }"
+          :class="{ invalid: errors.has('code') }"
+        />
         <button 
           style="width: 70px; height: 40px;"
           @click="getCode(phone)"
         >
           获取验证码
         </button>
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">{{ errors.first("code") }}</span>
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input type="text" placeholder="请输入你的登录密码" v-model="pwd">
-        <span class="error-msg">错误提示信息</span>
+        <input
+          placeholder="请输入你的登录密码"
+          v-model="pwd"
+          name="password"
+          v-validate="{ required: true, regex: /^[0-9A-z]{8,20}$/ }"
+          :class="{ invalid: errors.has('password') }"
+        />
+        <span class="error-msg">{{ errors.first("password") }}</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input type="text" placeholder="请输入确认密码" v-model="pwdConfirm">
-        <span class="error-msg">错误提示信息</span>
+        <input
+          placeholder="请输入确认密码"
+          v-model="pwdConfirm"
+          name="password1"
+          v-validate="{ required: true, is: pwd }"
+          :class="{ invalid: errors.has('password1') }"
+        />
+        <span class="error-msg">{{ errors.first("password1") }}</span>
       </div>
       <div class="controls">
-        <input name="m1" type="checkbox" :checked="agree">
+        <input
+          type="checkbox"
+          v-model="agree"
+          name="agree"
+          v-validate="{ required: true, 'tongyi': agree }"
+          :class="{ invalid: errors.has('agree') }"
+        />
         <span>同意协议并注册《尚品汇用户协议》</span>
-        <span class="error-msg">错误提示信息</span>
+        <span class="error-msg">{{ errors.first("agree") }}</span>
       </div>
       <div class="btn">
         <button @click="userRegister">完成注册</button>
@@ -84,25 +114,30 @@
       },
       // 用户完成注册跳转登陆页面【并把参数携带给服务器】
       async userRegister() {
-        // 解构
-        const { phone, pwd, pwdConfirm, code } = this
-        // 这几项这要有一个不满足直接返回
-        if (!(phone && pwd && code && pwdConfirm && pwd === pwdConfirm)) {
-          return
+        const success = await this.$validator.validateAll()
+        // 表单验证成功了再发请求，不然就不发
+        if (success) {
+          // 解构
+          const { phone, pwd, code } = this
+          // 这几项这要有一个不满足直接返回【用了 vee-validate 之久不需要手动再去验证了】
+          // if (!(phone && pwd && code && pwdConfirm && pwd === pwdConfirm)) {
+          //   return
+          // }
+          // 封装成参数对象
+          const params = {
+            phone: phone,
+            password: pwd,
+            code: code
+          }
+          // 成功就跳转路由到登陆，失败就打印错误
+          try {
+            await this.$store.dispatch('userRegister', params)
+            this.$router.push('/login')
+          } catch (error) {
+            console.log(error);
+          }
         }
-        // 封装成参数对象
-        const params = {
-          phone: phone,
-          password: pwd,
-          code: code
-        }
-        // 成功就跳转路由到登陆，失败就打印错误
-        try {
-          await this.$store.dispatch('userRegister', params)
-          this.$router.push('/login')
-        } catch (error) {
-          console.log(error);
-        }
+        
       }
     }
   }

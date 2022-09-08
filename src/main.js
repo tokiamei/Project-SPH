@@ -25,6 +25,23 @@ import * as API from '@/api'
 // 引入 element-UI 
 import { Button, MessageBox } from 'element-ui'
 
+// 引入自定义插件
+import myPlugin from '@/plugins/myPlugin'
+// 引入校验插件【只需要执行一下即可】
+import '@/plugins/validate'
+
+// 引入图片懒加载插件
+import VueLazyload from 'vue-lazyload'
+import girl from '@/assets/images/girl.gif'
+// 使用图片懒加载插件
+Vue.use(VueLazyload, {
+  loading: girl
+})
+
+// 使用自定义插件
+Vue.use(myPlugin, {
+  name: 'upper'
+})
 
 // 使用全局组件，第一个参数：全局组件的名字，第二个参数：哪一个组件
 Vue.component(TypeNav.name, TypeNav)

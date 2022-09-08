@@ -1,6 +1,7 @@
 /* 配置路由 */
 
 // 引入 Vue 和 VueRouter
+// 两种方法 1.正常引入 2.动态引入
 import Vue from "vue"
 import VueRouter from "vue-router"
 import routes from './routes'
@@ -76,7 +77,7 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     // 禁止访问的路由: 交易相关、支付相关、用户中心
-    if (path.search('/trade|pay|center/') !== -1) {
+    if (path.search('/trade|pay|center/') !== -1) { 
       console.log('你还没登陆');
       // 把未登录的时候想去而没有去成的信息，存储再地址栏中【路由】
       next(`/login?redirect=${path}`)

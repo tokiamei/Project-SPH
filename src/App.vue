@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <h1 v-upper>呵呵</h1> -->
     <Header/>
     <!-- 路由组件的出口位置 -->
     <router-view></router-view>

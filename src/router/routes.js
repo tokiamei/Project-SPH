@@ -1,16 +1,19 @@
 /* 存放路由组件配置的模块 */
-// 引入路由组件
-import Home from "@/pages/Home"
-import Search from "@/pages/Search"
-import Login from "@/pages/Login"
-import Register from "@/pages/Register"
-import Detail from "@/pages/Detail"
+// 引入路由组件【非动态引入】
+// import Home from "@/pages/Home"
+
+// 路由懒加载--动态加载路由
+const foo = () => {
+  console.log('*****');
+  return import('@/pages/Home')
+}
 
 export default [
   {
     name: "home",
     path: "/home",
-    component: Home,
+    // component: Home,
+    component: foo,
     meta: { showFooter: true }
   },
   // 重定向，在项目跑起来的时候，访问 / ，立马让他定位到首页
@@ -22,7 +25,7 @@ export default [
   {
     name: "search",
     path: "/search/:keyword?",
-    component: Search,
+    component: () => import('@/pages/Search'),
     meta: { showFooter: true },
     //#region 
       /* 利用 props 传递参数 */
@@ -45,21 +48,21 @@ export default [
   {
     name: 'login',
     path: "/login",
-    component: Login,
+    component: () => import('@/pages/Login'),
     meta: { showFooter: false }
   },
   // 注册组件
   {
     name: 'register',
     path: "/register",
-    component: Register,
+    component: () => import('@/pages/Register'),
     meta: { showFooter: false }
   },
   // 详情组件
   {
     name: "detail",
     path: "/detail/:skuid",
-    component: Detail,
+    component: () => import('@/pages/Detail'),
     meta: { showFooter: true }
   },
   // 购物成功路由组件
@@ -81,14 +84,31 @@ export default [
     name: 'trade',
     path: '/trade',
     component: () => import('@/pages/Trade'),
-    meta: { showFooter: true }
+    meta: { showFooter: true },
+    // 想进入交易路由，必须从购物车来，不然从哪来回哪去
+    beforeEnter: (to, from, next) => {
+      if (from.path == '/shopCart') {
+        next()
+      } else {
+        // 从哪来，回哪去
+        next(false)
+      }
+    }
   },
   // 支付组件
   {
     name: 'pay',
     path: '/pay',
     component: () => import('@/pages/Pay'),
-    meta: { showFooter: true }
+    meta: { showFooter: true },
+    // 这里也需要路由独享守卫，必须从交易页面过来，才能进入支付组件
+    beforeEnter: (to, from, next) => {
+      if (from.path == '/trade') {
+        next()
+      } else {
+        next(false)
+      }
+    }
   },
   // 支付成功路由
   {
